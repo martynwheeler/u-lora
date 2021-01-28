@@ -1,12 +1,13 @@
-import time
-from enum import Enum
+import utime
 import math
-from collections import namedtuple
-from random import random
+from ucollections import namedtuple
+from urandom import random
 
+from enum import Enum
 import RPi.GPIO as GPIO
 import spidev
 
+#Constants
 FLAGS_ACK = 0x80
 BROADCAST_ADDRESS = 255
 
@@ -53,6 +54,12 @@ MODE_CAD = 0x07
 REG_09_PA_CONFIG = 0x09
 FXOSC = 32000000.0
 FSTEP = (FXOSC / 524288)
+
+class ModemConfig(Enum):
+    Bw125Cr45Sf128 = (0x72, 0x74, 0x04)
+    Bw500Cr45Sf128 = (0x92, 0x74, 0x04)
+    Bw31_25Cr48Sf512 = (0x48, 0x94, 0x04)
+    Bw125Cr48Sf4096 = (0x78, 0xc4, 0x0c)
 
 
 class LoRa(object):
