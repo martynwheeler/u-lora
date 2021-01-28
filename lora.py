@@ -2,6 +2,9 @@ import utime
 import math
 from ucollections import namedtuple
 from urandom import random
+from machine import SPI
+from machine import Pin
+
 
 from enum import Enum
 import RPi.GPIO as GPIO
