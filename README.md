@@ -11,14 +11,14 @@ The RFM95 module requires 3.3V and GND from your microcontroller:
 + connect GND to pin 1, 8, or 10 on the RFM95 module
 
 For SPI communication (pin numbers are for the RFM95 - look at your microcontroller for the pins to connect):  
-    MISO to pin 2 (MISO)  
-    MOSI to pin 3 (MOSI)  
-    SCK to pin 4 (SCK)  
-    CS to pin 5 (NSS)  
++ MISO to pin 2 (MISO)  
++ MOSI to pin 3 (MOSI)  
++ SCK to pin 4 (SCK)  
++ CS to pin 5 (NSS)  
     
 Other pins:  
-    Use a GPIO output to pin 6 (RESET) for resetting the RFM95  
-    Use a GPIO input to pin 14 (D) to trigger that a message has been received  
++ Use a GPIO output to pin 6 (RESET) for resetting the RFM95  
++ Use a GPIO input to pin 14 (D) to trigger that a message has been received  
 
 ## Configuration
 **INITIALIZATION**
