@@ -1,7 +1,7 @@
 import time
 import math
 from ucollections import namedtuple
-from urandom import random
+from urandom import getrandbits
 from machine import SPI
 from machine import Pin
 
@@ -102,7 +102,8 @@ class LoRa(object):
         self.retry_timeout = 0.2
         
         # Setup the module
-        gpio_interrupt = Pin(self._interrupt, Pin.IN, Pin.PULL_DOWN)
+#        gpio_interrupt = Pin(self._interrupt, Pin.IN, Pin.PULL_DOWN)
+        gpio_interrupt = Pin(self._interrupt, Pin.IN)
         gpio_interrupt.irq(trigger=Pin.IRQ_RISING, handler=self._handle_interrupt)
         
         # reset the board
@@ -118,7 +119,7 @@ class LoRa(object):
 
         # cs gpio pin
         self.cs = Pin(self._cs_pin, Pin.OUT)
-        self.cs.high()
+        self.cs.value(1)
         
         # set mode
         self._spi_write(REG_01_OP_MODE, MODE_SLEEP | LONG_RANGE_MODE)
@@ -261,7 +262,7 @@ class LoRa(object):
                 return True
 
             start = time.time()
-            while time.time() - start < self.retry_timeout + (self.retry_timeout * random()):
+            while time.time() - start < self.retry_timeout + (self.retry_timeout * (getrandbits(16) / (2**16 - 1))):
                 if self._last_payload:
                     if self._last_payload.header_to == self._this_address and \
                             self._last_payload.header_flags & FLAGS_ACK and \
@@ -282,17 +283,17 @@ class LoRa(object):
             payload = [p for p in payload]
         elif type(payload) == str:
             payload = [ord(s) for s in payload]
-        self.cs.low()
+        self.cs.value(0)
         self.spi.write(bytearray([register | 0x80] + payload))
-        self.cs.high()
+        self.cs.value(1)
 
     def _spi_read(self, register, length=1):
-        self.cs.low()
+        self.cs.value(0)
         if length == 1:
             data = self.spi.read(length + 1, register)[1]
         else:
             data = self.spi.read(length + 1, register)[1:]
-        self.cs.high()
+        self.cs.value(1)
         return data
         
     def _decrypt(self, message):
