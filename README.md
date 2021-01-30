@@ -2,7 +2,7 @@
 
 This is a port of raspi-lora (https://pypi.org/project/raspi-lora/) for micropython.  I have currently only tested on raspberry pi pico.  It allows your microcontroller to use an RFM95 to communicate.
 
-# Wiring
+## Wiring
 
 The pinout for the RFM95 module can be found on page 10 of teh documentation (https://cdn.sparkfun.com/assets/learn_tutorials/8/0/4/RFM95_96_97_98W.pdf).
 
@@ -19,7 +19,7 @@ Other pins:
     Use a GPIO output to pin 6 (RESET) for resetting the RFM95
     Use a GPIO input to pin 14 (D) to trigger that a message has been received
 
-# Example usage (server mode):
+## Example usage (server mode):
 
 Create a file main.py with the following contents and copy it across together with the library ulora.py to your microcontroller
 
@@ -55,7 +55,7 @@ while True:
     sleep(0.1)
 ```
 
-# Example usage (client mode):
+## Example usage (client mode):
 Create a file main.py with the following contents and copy it across together with the library ulora.py to your microcontroller
 
 ```
