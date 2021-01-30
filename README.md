@@ -1,11 +1,25 @@
 # u-lora
-raspi-lora for micropython
 
-I have ported raspi-lora (https://pypi.org/project/raspi-lora/) to micropython.
+This is a port of raspi-lora (https://pypi.org/project/raspi-lora/) for micropython.  I have currently only tested on raspberry pi pico.  It allows your microcontroller to use an RFM95 to communicate.
 
-I have currently only tested on raspberry pi pico.
+# Wiring
 
-Example usage (server mode):
+The pinout for the RFM95 module can be found on page 10 of teh documentation (https://cdn.sparkfun.com/assets/learn_tutorials/8/0/4/RFM95_96_97_98W.pdf).
+
+The RFM95 module requires 3.3V and GND from your microcontroller:
+    connect 3.3V to pin 13 and GND to pin 1, 8, or 10 on the RFM95 module.
+
+For SPI communication (pin numbers are for the RFM95 - look at your microcontroller for the pins to connect):
+    MISO to pin 2 (MISO)
+    MOSI to pin 3 (MOSI)
+    SCK to pin 4 (SCK)
+    CS to pin 5 (NSS)
+    
+Other pins:
+    Use a GPIO output to pin 6 (RESET) for resetting the RFM95
+    Use a GPIO input to pin 14 (D) to trigger that a message has been received
+
+# Example usage (server mode):
 
 Create a file main.py with the following contents and copy it across together with the library ulora.py to your microcontroller
 
@@ -41,7 +55,7 @@ while True:
     sleep(0.1)
 ```
 
-Example usage (client mode):
+# Example usage (client mode):
 Create a file main.py with the following contents and copy it across together with the library ulora.py to your microcontroller
 
 ```
