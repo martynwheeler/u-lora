@@ -39,7 +39,7 @@ LoRa(spi_channel, interrupt, this_address, cs_pin, reset_pin=None, freq=868, tx_
 **acks** If True, send an acknowledgment packet when a message is received and wait for an acknowledgment when transmitting a message. This is equivalent to using RadioHead's RHReliableDatagram  
 **crypto** An instance of PyCryptodome Cipher.AES (not tested) - should be able to use ucrypto  
 
-## SPICONFIG
+### SPICONFIG
 Preconfigured SPI bus pins for tested devices, just add into the class for other devices
 ```
 class SPIConfig():
