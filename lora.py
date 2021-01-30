@@ -113,16 +113,23 @@ class LoRa(object):
             gpio_reset.value(1)
             time.sleep(0.01)
 
-        # baud rate to 5000000
+        # baud rate to 5MHz
         self.spi = SPI(self._channel, baudrate=5000000)
 
-        # cs gpio pin
-        self.cs = machine.Pin(5, machine.Pin.OUT)
+        # cs gpio pin - currently hardwired for the pico
+        if self._channel == 0:
+            self.cs = Pin(5, Pin.OUT)
+        elif self._channel == 1:
+            self.cs = Pin(9, Pin.OUT)
+
+        # set the cs pin high
         self.cs.high()
         
+        # set mode
         self._spi_write(REG_01_OP_MODE, MODE_SLEEP | LONG_RANGE_MODE)
-        time.sleep(0.1) # 0.1
+        time.sleep(0.1)
         
+        # check if mode is set
         assert self._spi_read(REG_01_OP_MODE) == (MODE_SLEEP | LONG_RANGE_MODE), \
             "LoRa initialization failed"
 
