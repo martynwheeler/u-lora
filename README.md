@@ -79,7 +79,8 @@ CLIENT_ADDRESS = 1
 SERVER_ADDRESS = 2
 
 # initialise radio
-lora = LoRa(RFM95_SPIBUS, RFM95_INT, SERVER_ADDRESS, RFM95_CS, reset_pin=RFM95_RST, freq=RF95_FREQ, tx_power=RF95_POW, acks=True)
+lora = LoRa(RFM95_SPIBUS, RFM95_INT, SERVER_ADDRESS, RFM95_CS, 
+            reset_pin=RFM95_RST, freq=RF95_FREQ, tx_power=RF95_POW, acks=True)
 
 # set callback
 lora.on_recv = on_recv
@@ -110,7 +111,8 @@ CLIENT_ADDRESS = 1
 SERVER_ADDRESS = 2
 
 # initialise radio
-lora = LoRa(RFM95_SPIBUS, RFM95_INT, CLIENT_ADDRESS, RFM95_CS, reset_pin=RFM95_RST, freq=RF95_FREQ, tx_power=RF95_POW, acks=True)
+lora = LoRa(RFM95_SPIBUS, RFM95_INT, CLIENT_ADDRESS, RFM95_CS,
+            reset_pin=RFM95_RST, freq=RF95_FREQ, tx_power=RF95_POW, acks=True)
 
 
 # loop and send data
