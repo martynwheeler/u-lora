@@ -20,7 +20,7 @@ Other pins:
     Use a GPIO input to pin 14 (D) to trigger that a message has been received
 
 ## Configuration
-INITIALIZATION
+**INITIALIZATION**  
 LoRa(channel, interrupt, this_address, freq=915, tx_power=14,
       modem_config=ModemConfig.Bw125Cr45Sf128, acks=False, crypto=None)
 
