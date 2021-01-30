@@ -6,7 +6,7 @@ This is a port of raspi-lora (https://pypi.org/project/raspi-lora/) for micropyt
 
 The pinout for the RFM95 module can be found on page 10 of the documentation (https://cdn.sparkfun.com/assets/learn_tutorials/8/0/4/RFM95_96_97_98W.pdf).  The pin numbers below are for the RFM95 - look at your microcontroller docs for the pins to connect to them.
 
-The RFM95 module requires 3.3V and GND from your microcontroller:  
+Power (the RFM95 module requires 3.3V from your microcontroller):  
 + connect 3.3V to pin 13  
 + connect GND to pin 1, 8, or 10 on the RFM95 module
 
