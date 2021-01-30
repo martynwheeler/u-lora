@@ -7,7 +7,7 @@ I have currently only tested on raspberry pi pico.
 
 Example usage (server mode):
 
-Create a file main.py and copy it across together with the library ulora.py to your microcontroller
+Create a file main.py with the following contents and copy it across together with the library ulora.py to your microcontroller
 
 ```
 from time import sleep
