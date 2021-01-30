@@ -60,27 +60,27 @@ class ModemConfig():
     Bw125Cr48Sf4096 = (0x78, 0xc4, 0x0c)
 
 class LoRa(object):
-    def __init__(self, channel, interrupt, this_address, reset_pin=None, freq=915, tx_power=14,
-                 modem_config=ModemConfig.Bw125Cr45Sf128, receive_all=False,
-                 acks=False, crypto=None):
+    def __init__(self, channel, interrupt, this_address, cs_pin, reset_pin=None, freq=868.0, tx_power=14,
+                 modem_config=ModemConfig.Bw125Cr45Sf128, receive_all=False, acks=False, crypto=None):
         """
-        Lora((channel, interrupt, this_address, freq=915, tx_power=14,
-                 modem_config=ModemConfig.Bw125Cr45Sf128, receive_all=False,
-                 acks=False, crypto=None, reset_pin=False)
+        Lora(channel, interrupt, this_address, cs_pin, reset_pin=None, freq=868.0, tx_power=14,
+                 modem_config=ModemConfig.Bw125Cr45Sf128, receive_all=False, acks=False, crypto=None)
         channel: SPI channel [0 for CE0, 1 for CE1]
-        interrupt: Raspberry Pi interrupt pin (BCM)
+        interrupt: GPIO interrupt pin
         this_address: set address for this device [0-254]
-        reset_pin: the Raspberry Pi port used to reset the RFM9x if connected
+        cs_pin: chip select pin from microcontroller 
+        reset_pin: the GPIO used to reset the RFM9x if connected
         freq: frequency in MHz
         tx_power: transmit power in dBm
         modem_config: Check ModemConfig. Default is compatible with the Radiohead library
         receive_all: if True, don't filter packets on address
         acks: if True, request acknowledgments
-        crypto: if desired, an instance of pycrypto AES
+        crypto: if desired, an instance of ucrypto AES (https://docs.pycom.io/firmwareapi/micropython/ucrypto/) - not tested
         """
         
         self._channel = channel
         self._interrupt = interrupt
+        self._cs_pin = cs_pin
 
         self._mode = None
         self._cad = None
@@ -116,13 +116,8 @@ class LoRa(object):
         # baud rate to 5MHz
         self.spi = SPI(self._channel, baudrate=5000000)
 
-        # cs gpio pin - currently hardwired for the pico
-        if self._channel == 0:
-            self.cs = Pin(5, Pin.OUT)
-        elif self._channel == 1:
-            self.cs = Pin(9, Pin.OUT)
-
-        # set the cs pin high
+        # cs gpio pin
+        self.cs = Pin(self._cs_pin, Pin.OUT)
         self.cs.high()
         
         # set mode
