@@ -59,9 +59,8 @@ There are two examples to test sending and receiving data in the examples folder
 Copy the file server.py to your main.py and copy it across together with the library ulora.py to your microcontroller
 
 ```
-  
 from time import sleep
-from ulora import LoRa, ModemConfig
+from ulora import LoRa, ModemConfig, SPIConfig
 
 # This is our callback function that runs when a message is received
 def on_recv(payload):
@@ -71,11 +70,12 @@ def on_recv(payload):
 
 # Lora Parameters
 RFM95_RST = 27
-RFM95_SPIBUS = 0
+RFM95_SPIBUS = SPIConfig.rp2_0
 RFM95_CS = 5
 RFM95_INT = 28
 RF95_FREQ = 868.0
 RF95_POW = 20
+CLIENT_ADDRESS = 1
 SERVER_ADDRESS = 2
 
 # initialise radio
@@ -97,11 +97,11 @@ Copy the file server.py to your main.py and copy it across together with the lib
 
 ```
 from time import sleep
-from ulora import LoRa, ModemConfig
+from ulora import LoRa, ModemConfig, SPIConfig
 
 # Lora Parameters
 RFM95_RST = 27
-RFM95_SPIBUS = 0
+RFM95_SPIBUS = SPIConfig.rp2_0
 RFM95_CS = 5
 RFM95_INT = 28
 RF95_FREQ = 868.0
