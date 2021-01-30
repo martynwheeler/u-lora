@@ -1,14 +1,9 @@
-import utime
+mport time
 import math
 from ucollections import namedtuple
 from urandom import random
 from machine import SPI
 from machine import Pin
-
-
-from enum import Enum
-import RPi.GPIO as GPIO
-import spidev
 
 #Constants
 FLAGS_ACK = 0x80
@@ -58,12 +53,11 @@ REG_09_PA_CONFIG = 0x09
 FXOSC = 32000000.0
 FSTEP = (FXOSC / 524288)
 
-class ModemConfig(Enum):
+class ModemConfig():
     Bw125Cr45Sf128 = (0x72, 0x74, 0x04)
     Bw500Cr45Sf128 = (0x92, 0x74, 0x04)
     Bw31_25Cr48Sf512 = (0x48, 0x94, 0x04)
     Bw125Cr48Sf4096 = (0x78, 0xc4, 0x0c)
-
 
 class LoRa(object):
     def __init__(self, channel, interrupt, this_address, reset_pin=None, freq=915, tx_power=14,
@@ -106,41 +100,41 @@ class LoRa(object):
         self.send_retries = 2
         self.wait_packet_sent_timeout = 0.2
         self.retry_timeout = 0.2
-
+        
         # Setup the module
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self._interrupt, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-        GPIO.add_event_detect(self._interrupt, GPIO.RISING, callback=self._handle_interrupt)
+        gpio_interrupt = Pin(self._interrupt, Pin.IN, Pin.PULL_DOWN)
+        gpio_interrupt.irq(trigger=Pin.IRQ_RISING, handler=self._handle_interrupt)
         
         # reset the board
         if reset_pin:
-            GPIO.setup(reset_pin,GPIO.OUT)
-            GPIO.output(reset_pin,GPIO.LOW)
+            gpio_reset = Pin(reset_pin, Pin.OUT)
+            gpio_reset.value(0)
             time.sleep(0.01)
-            GPIO.output(reset_pin,GPIO.HIGH)
+            gpio_reset.value(1)
             time.sleep(0.01)
-            GPIO.cleanup(reset_pin)
 
+        # baud rate to 5000000
+        self.spi = SPI(self._channel, baudrate=5000000)
 
-        self.spi = spidev.SpiDev()
-        self.spi.open(0, self._channel)
-        self.spi.max_speed_hz = 5000000
-
+        # cs gpio pin
+        self.cs = machine.Pin(5, machine.Pin.OUT)
+        self.cs.high()
+        
         self._spi_write(REG_01_OP_MODE, MODE_SLEEP | LONG_RANGE_MODE)
-        time.sleep(0.1)
-
+        time.sleep(0.1) # 0.1
+        
         assert self._spi_read(REG_01_OP_MODE) == (MODE_SLEEP | LONG_RANGE_MODE), \
             "LoRa initialization failed"
 
         self._spi_write(REG_0E_FIFO_TX_BASE_ADDR, 0)
         self._spi_write(REG_0F_FIFO_RX_BASE_ADDR, 0)
-
+        
         self.set_mode_idle()
 
         # set modem config (Bw125Cr45Sf128)
-        self._spi_write(REG_1D_MODEM_CONFIG1, self._modem_config.value[0])
-        self._spi_write(REG_1E_MODEM_CONFIG2, self._modem_config.value[1])
-        self._spi_write(REG_26_MODEM_CONFIG3, self._modem_config.value[2])
+        self._spi_write(REG_1D_MODEM_CONFIG1, self._modem_config[0])
+        self._spi_write(REG_1E_MODEM_CONFIG2, self._modem_config[1])
+        self._spi_write(REG_26_MODEM_CONFIG3, self._modem_config[2])
 
         # set preamble length (8)
         self._spi_write(REG_20_PREAMBLE_MSB, 0)
@@ -151,7 +145,7 @@ class LoRa(object):
         self._spi_write(REG_06_FRF_MSB, (frf >> 16) & 0xff)
         self._spi_write(REG_07_FRF_MID, (frf >> 8) & 0xff)
         self._spi_write(REG_08_FRF_LSB, frf & 0xff)
-
+        
         # Set tx power
         if self._tx_power < 5:
             self._tx_power = 5
@@ -165,7 +159,7 @@ class LoRa(object):
             self._spi_write(REG_4D_PA_DAC, PA_DAC_DISABLE)
 
         self._spi_write(REG_09_PA_CONFIG, PA_SELECT | (self._tx_power - 5))
-
+        
     def on_recv(self, message):
         # This should be overridden by the user
         pass
@@ -186,7 +180,7 @@ class LoRa(object):
             self._spi_write(REG_01_OP_MODE, MODE_RXCONTINUOUS)
             self._spi_write(REG_40_DIO_MAPPING1, 0x00)  # Interrupt on RxDone
             self._mode = MODE_RXCONTINUOUS
-
+            
     def set_mode_cad(self):
         if self._mode != MODE_CAD:
             self._spi_write(REG_01_OP_MODE, MODE_CAD)
@@ -200,7 +194,7 @@ class LoRa(object):
             yield
 
         return self._cad
-
+    
     def wait_cad(self):
         if not self.cad_timeout:
             return True
@@ -286,15 +280,19 @@ class LoRa(object):
             payload = [p for p in payload]
         elif type(payload) == str:
             payload = [ord(s) for s in payload]
-
-        self.spi.xfer([register | 0x80] + payload)
+        self.cs.low()
+        self.spi.write(bytearray([register | 0x80] + payload))
+        self.cs.high()
 
     def _spi_read(self, register, length=1):
+        self.cs.low()
         if length == 1:
-            return self.spi.xfer([register] + [0] * length)[1]
+            data = self.spi.read(length + 1, register)[1]
         else:
-            return self.spi.xfer([register] + [0] * length)[1:]
-
+            data = self.spi.read(length + 1, register)[1:]
+        self.cs.high()
+        return data
+        
     def _decrypt(self, message):
         decrypted_msg = self.crypto.decrypt(message)
         msg_length = decrypted_msg[0]
@@ -366,5 +364,4 @@ class LoRa(object):
         self._spi_write(REG_12_IRQ_FLAGS, 0xff)
 
     def close(self):
-        GPIO.cleanup()
-        self.spi.close()
+        self.spi.deinit()
