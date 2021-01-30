@@ -47,6 +47,7 @@ There are two examples to test sending and receiving data in the examples folder
 Copy the file server.py to your main.py and copy it across together with the library ulora.py to your microcontroller
 
 ```
+  
 from time import sleep
 from ulora import LoRa, ModemConfig
 
@@ -56,16 +57,17 @@ def on_recv(payload):
     print("Received:", payload.message)
     print("RSSI: {}; SNR: {}".format(payload.rssi, payload.snr))
 
-# Lora Parameters (this is on the raspberry pi pico)
-RFM95_RST = 27 # wire gpio 27 to RST
-RFM95_CS = 0 # use the spi0 (pins 4 (MOSI), 5 (CS), 6 (SCK), 7 (MISO))
-RFM95_INT = 28 # wire gpio 27 to D0
-RF95_FREQ = 868.0 # RF for Europe
+# Lora Parameters
+RFM95_RST = 27
+RFM95_SPIBUS = 0
+RFM95_CS = 5
+RFM95_INT = 28
+RF95_FREQ = 868.0
 RF95_POW = 20
 SERVER_ADDRESS = 2
 
 # initialise radio
-lora = LoRa(RFM95_CS, RFM95_INT, SERVER_ADDRESS, reset_pin=RFM95_RST, freq=RF95_FREQ, tx_power=RF95_POW, acks=True)
+lora = LoRa(RFM95_SPIBUS, RFM95_INT, SERVER_ADDRESS, RFM95_CS, reset_pin=RFM95_RST, freq=RF95_FREQ, tx_power=RF95_POW, acks=True)
 
 # set callback
 lora.on_recv = on_recv
@@ -87,7 +89,8 @@ from ulora import LoRa, ModemConfig
 
 # Lora Parameters
 RFM95_RST = 27
-RFM95_CS = 0
+RFM95_SPIBUS = 0
+RFM95_CS = 5
 RFM95_INT = 28
 RF95_FREQ = 868.0
 RF95_POW = 20
@@ -95,7 +98,8 @@ CLIENT_ADDRESS = 1
 SERVER_ADDRESS = 2
 
 # initialise radio
-lora = LoRa(RFM95_CS, RFM95_INT, CLIENT_ADDRESS, reset_pin=RFM95_RST, freq=RF95_FREQ, tx_power=RF95_POW, acks=True)
+lora = LoRa(RFM95_SPIBUS, RFM95_INT, CLIENT_ADDRESS, RFM95_CS, reset_pin=RFM95_RST, freq=RF95_FREQ, tx_power=RF95_POW, acks=True)
+
 
 # loop and send data
 while True:
