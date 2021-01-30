@@ -20,9 +20,10 @@ Other pins:
     Use a GPIO input to pin 14 (D) to trigger that a message has been received
 
 ## Configuration
-**INITIALIZATION**  
-LoRa(channel, interrupt, this_address, freq=915, tx_power=14,
-      modem_config=ModemConfig.Bw125Cr45Sf128, acks=False, crypto=None)
+**INITIALIZATION**
+```
+LoRa(channel, interrupt, this_address, freq=915, tx_power=14, modem_config=ModemConfig.Bw125Cr45Sf128, acks=False, crypto=None)
+```
 
 **channel** SPI channel to use (either 0 or 1, if your LoRa radio is connected to CE0 or CE1, respectively)  
 **interrupt** GPIO pin (BCM-style numbering) to use for the interrupt  
