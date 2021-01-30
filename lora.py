@@ -1,4 +1,4 @@
-mport time
+import time
 import math
 from ucollections import namedtuple
 from urandom import random
