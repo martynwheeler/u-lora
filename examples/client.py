@@ -1,9 +1,9 @@
 from time import sleep
-from ulora import LoRa, ModemConfig
+from ulora import LoRa, ModemConfig, SPIConfig
 
 # Lora Parameters
 RFM95_RST = 27
-RFM95_SPIBUS = 0
+RFM95_SPIBUS = SPIConfig.rp2_0
 RFM95_CS = 5
 RFM95_INT = 28
 RF95_FREQ = 868.0
