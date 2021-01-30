@@ -1,6 +1,6 @@
 # u-lora
 
-This is a port of raspi-lora (https://pypi.org/project/raspi-lora/) for micropython.  I have currently only tested on raspberry pi pico.  It allows your microcontroller to use an RFM95 to communicate.
+This is a port of raspi-lora (https://pypi.org/project/raspi-lora/) for micropython.  I have tested on raspberry pi pico, esp8266, and esp32.  It allows your microcontroller to use an RFM95 radio to communicate.
 
 ## Wiring
 
