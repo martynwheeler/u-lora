@@ -22,7 +22,8 @@ Other pins:
 ## Configuration
 **INITIALIZATION**
 ```
-LoRa(channel, interrupt, this_address, cs_pin, reset_pin=None, freq=868, tx_power=14, modem_config=ModemConfig.Bw125Cr45Sf128, acks=False, crypto=None)
+LoRa(channel, interrupt, this_address, cs_pin, reset_pin=None, freq=868, tx_power=14,
+    modem_config=ModemConfig.Bw125Cr45Sf128, acks=False, crypto=None)
 ```
 
 **channel** SPI channel to use (either 0 or 1, if your LoRa radio is connected to CE0 or CE1, respectively)  
