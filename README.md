@@ -23,21 +23,33 @@ Other pins:
 ## Configuration
 **INITIALIZATION**
 ```
-LoRa(channel, interrupt, this_address, cs_pin, reset_pin=None, freq=868, tx_power=14,
+LoRa(spi_channel, interrupt, this_address, cs_pin, reset_pin=None, freq=868, tx_power=14,
     modem_config=ModemConfig.Bw125Cr45Sf128, acks=False, crypto=None)
 ```
 
-**channel** SPI channel to use (either 0 or 1, if your LoRa radio is connected to CE0 or CE1, respectively)  
+**spi_channel** SPI channel, check SPIConfig for preconfigured names, e.g. SPIConfig.rp2_0 for RPi pico channel 0   
 **interrupt** GPIO pin to use for the interrupt  
 **this_address** The address number (0-254) your device will use when sending and receiving packets.  
 **cs_pin** chip select pin from microcontroller  
 **reset_pin** : the GPIO used to reset the RFM9x if connected  
 **freq** Frequency used by your LoRa radio. Defaults to 868Mhz  
 **tx_power** Transmission power level from 5 to 23. Keep this as low as possible. Defaults to 14  
-**model_config** Modem configuration. See RadioHead docs. Default to Bw125Cr45Sf128.  
+**modem_config** Modem configuration. See RadioHead docs. Default to Bw125Cr45Sf128.  
 **receive_all** Receive messages regardless of the destination address  
 **acks** If True, send an acknowledgment packet when a message is received and wait for an acknowledgment when transmitting a message. This is equivalent to using RadioHead's RHReliableDatagram  
 **crypto** An instance of PyCryptodome Cipher.AES (not tested) - should be able to use ucrypto  
+
+## SPICONFIG
+Preconfigured SPI bus pins for tested devices, just add into the class for other devices
+```
+class SPIConfig():
+    # spi pin defs for various boards (channel, sck, mosi, miso)
+    rp2_0 = (0, 6, 7, 4)
+    rp2_1 = (1, 10, 11, 8)
+    esp8286_1 = (1, 14, 13, 12)
+    esp32_1 = (1, 14, 13, 12)
+    esp32_2 = (2, 18, 23, 19)
+```
 
 ## Examples
 There are two examples to test sending and receiving data in the examples folder
