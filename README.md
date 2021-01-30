@@ -19,9 +19,12 @@ Other pins:
     Use a GPIO output to pin 6 (RESET) for resetting the RFM95
     Use a GPIO input to pin 14 (D) to trigger that a message has been received
 
-## Example usage (server mode):
+## Examples
+There are two examples to test sending and receiving data in the examples folder
 
-Create a file main.py with the following contents and copy it across together with the library ulora.py to your microcontroller
+### Server mode:
+
+Copy the file server.py to your main.py and copy it across together with the library ulora.py to your microcontroller
 
 ```
 from time import sleep
@@ -55,8 +58,8 @@ while True:
     sleep(0.1)
 ```
 
-## Example usage (client mode):
-Create a file main.py with the following contents and copy it across together with the library ulora.py to your microcontroller
+### Client mode:
+Copy the file server.py to your main.py and copy it across together with the library ulora.py to your microcontroller
 
 ```
 from time import sleep
