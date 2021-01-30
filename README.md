@@ -9,6 +9,7 @@ Example usage (server mode):
 
 Create a file main.py and copy it across together with the library ulora.py to your microcontroller
 
+```
 from time import sleep
 from ulora import LoRa, ModemConfig
 
@@ -38,3 +39,4 @@ lora.set_mode_rx()
 # loop and wait for data
 while True:
     sleep(0.1)
+```
