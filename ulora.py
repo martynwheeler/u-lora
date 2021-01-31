@@ -59,14 +59,22 @@ class ModemConfig():
     Bw31_25Cr48Sf512 = (0x48, 0x94, 0x04) #< Bw = 31.25 kHz, Cr = 4/8, Sf = 512chips/symbol, CRC on. Slow+long range
     Bw125Cr48Sf4096 = (0x78, 0xc4, 0x0c) #/< Bw = 125 kHz, Cr = 4/8, Sf = 4096chips/symbol, low data rate, CRC on. Slow+long range
     Bw125Cr45Sf2048 = (0x72, 0xb4, 0x04) #< Bw = 125 kHz, Cr = 4/5, Sf = 2048chips/symbol, CRC on. Slow+long range
-    
+
+class SPIConfig():
+    # spi pin defs for various boards (channel, sck, mosi, miso)
+    rp2_0 = (0, 6, 7, 4)
+    rp2_1 = (1, 10, 11, 8)
+    esp8286_1 = (1, 14, 13, 12)
+    esp32_1 = (1, 14, 13, 12)
+    esp32_2 = (2, 18, 23, 19)
+
 class LoRa(object):
-    def __init__(self, channel, interrupt, this_address, cs_pin, reset_pin=None, freq=868.0, tx_power=14,
+    def __init__(self, spi_channel, interrupt, this_address, cs_pin, reset_pin=None, freq=868.0, tx_power=14,
                  modem_config=ModemConfig.Bw125Cr45Sf128, receive_all=False, acks=False, crypto=None):
         """
         Lora(channel, interrupt, this_address, cs_pin, reset_pin=None, freq=868.0, tx_power=14,
                  modem_config=ModemConfig.Bw125Cr45Sf128, receive_all=False, acks=False, crypto=None)
-        channel: SPI channel [0 for CE0, 1 for CE1]
+        channel: SPI channel, check SPIConfig for preconfigured names
         interrupt: GPIO interrupt pin
         this_address: set address for this device [0-254]
         cs_pin: chip select pin from microcontroller 
@@ -79,7 +87,7 @@ class LoRa(object):
         crypto: if desired, an instance of ucrypto AES (https://docs.pycom.io/firmwareapi/micropython/ucrypto/) - not tested
         """
         
-        self._channel = channel
+        self._spi_channel = spi_channel
         self._interrupt = interrupt
         self._cs_pin = cs_pin
 
@@ -116,7 +124,8 @@ class LoRa(object):
             time.sleep(0.01)
 
         # baud rate to 5MHz
-        self.spi = SPI(self._channel, baudrate=5000000)
+        self.spi = SPI(self._spi_channel[0], 5000000,
+                       sck=Pin(self._spi_channel[1]), mosi=Pin(self._spi_channel[2]), miso=Pin(self._spi_channel[3]))
 
         # cs gpio pin
         self.cs = Pin(self._cs_pin, Pin.OUT)
