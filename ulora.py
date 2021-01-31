@@ -54,11 +54,12 @@ FXOSC = 32000000.0
 FSTEP = (FXOSC / 524288)
 
 class ModemConfig():
-    Bw125Cr45Sf128 = (0x72, 0x74, 0x04)
-    Bw500Cr45Sf128 = (0x92, 0x74, 0x04)
-    Bw31_25Cr48Sf512 = (0x48, 0x94, 0x04)
-    Bw125Cr48Sf4096 = (0x78, 0xc4, 0x0c)
-
+    Bw125Cr45Sf128 = (0x72, 0x74, 0x04) #< Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on. Default medium range
+    Bw500Cr45Sf128 = (0x92, 0x74, 0x04) #< Bw = 500 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on. Fast+short range
+    Bw31_25Cr48Sf512 = (0x48, 0x94, 0x04) #< Bw = 31.25 kHz, Cr = 4/8, Sf = 512chips/symbol, CRC on. Slow+long range
+    Bw125Cr48Sf4096 = (0x78, 0xc4, 0x0c) #/< Bw = 125 kHz, Cr = 4/8, Sf = 4096chips/symbol, low data rate, CRC on. Slow+long range
+    Bw125Cr45Sf2048 = (0x72, 0xb4, 0x04) #< Bw = 125 kHz, Cr = 4/5, Sf = 2048chips/symbol, CRC on. Slow+long range
+    
 class LoRa(object):
     def __init__(self, channel, interrupt, this_address, cs_pin, reset_pin=None, freq=868.0, tx_power=14,
                  modem_config=ModemConfig.Bw125Cr45Sf128, receive_all=False, acks=False, crypto=None):
