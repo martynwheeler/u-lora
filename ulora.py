@@ -264,7 +264,7 @@ class LoRa(object):
         return True
 
     def send_to_wait(self, data, header_to, header_flags=0, retries=3):
-        self._last_header_id += 1
+        self._last_header_id = (self._last_header_id + 1) % 256
 
         for _ in range(retries + 1):
             if self._acks:
