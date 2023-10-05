@@ -167,7 +167,7 @@ class LoRa(object):
         if self._tx_power > 23:
             self._tx_power = 23
 
-        if self._tx_power < 20:
+        if self._tx_power > 20:
             self._spi_write(REG_4D_PA_DAC, PA_DAC_ENABLE)
             self._tx_power -= 3
         else:
