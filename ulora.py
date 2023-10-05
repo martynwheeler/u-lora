@@ -7,6 +7,8 @@ from machine import Pin
 
 #Constants
 FLAGS_ACK = 0x80
+FLAGS_REQ_ACK = 0x40
+
 BROADCAST_ADDRESS = 255
 
 REG_00_FIFO = 0x00
@@ -265,10 +267,12 @@ class LoRa(object):
         self._last_header_id += 1
 
         for _ in range(retries + 1):
+            if self._acks:
+                header_flags |= FLAGS_REQ_ACK
             self.send(data, header_to, header_id=self._last_header_id, header_flags=header_flags)
             self.set_mode_rx()
 
-            if header_to == BROADCAST_ADDRESS:  # Don't wait for acks from a broadcast message
+            if  (not self._acks) or (header_to == BROADCAST_ADDRESS):  # Don't wait for acks from a broadcast message
                 return True
 
             start = time.time()
@@ -348,13 +352,13 @@ class LoRa(object):
                 header_flags = packet[3]
                 message = bytes(packet[4:]) if packet_len > 4 else b''
 
-                if (self._this_address != header_to) and ((header_to != BROADCAST_ADDRESS) or (self._receive_all is False)):
+                if (self._this_address != header_to) and (header_to != BROADCAST_ADDRESS) and (self._receive_all is False))
                     return
 
                 if self.crypto and len(message) % 16 == 0:
                     message = self._decrypt(message)
 
-                if self._acks and header_to == self._this_address and not header_flags & FLAGS_ACK:
+                if self._acks and header_to == self._this_address and header_flags & FLAGS_REQ_ACK and not header_flags & FLAGS_ACK:
                     self.send_ack(header_from, header_id)
 
                 self.set_mode_rx()
